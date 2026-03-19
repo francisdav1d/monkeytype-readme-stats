@@ -31,9 +31,12 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 - `wpm15`
 - `wpm30`
 - `wpm60`
+- `wpm120`
 - `rank15`
 - `rank60`
 - `tests`
+
+*(Note: The right-side circular ring automatically calculates your precise World Percentile by looking at your 60s Global rank).*
 
 ---
 
