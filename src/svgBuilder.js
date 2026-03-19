@@ -1,115 +1,121 @@
 export const generateSvg = (stats, options) => {
-  const { username, bestWpm, averageWpm, accuracy, testsCompleted } = stats;
-  const { theme, accent, hide } = options;
+  const { username, bestWpm, wpm15, wpm30, wpm60, wpm120, rank15, rank60, rank60Count, testsCompleted } = stats;
+  const { theme, accent, hide, show } = options;
 
   const isLight = theme === 'light';
-  const accentColor = accent ? `#${accent}` : null;
+  const customAccent = accent ? `#${accent}` : null;
   
+  // Authentic Monkeytype Theme Colors (Serika Dark / Light)
   const colors = {
-    bg: isLight ? '#ffffff' : '#0d1117',
-    border: isLight ? '#e1e4e8' : '#30363D',
-    title: isLight ? '#24292f' : '#c9d1d9',
-    username: accentColor || (isLight ? '#0969da' : '#58a6ff'),
-    text: isLight ? '#57606a' : '#8b949e',
-    value: isLight ? '#24292f' : '#c9d1d9',
-    progressBg: isLight ? '#e1e4e8' : '#21262d',
-    gradientStart: accentColor || (isLight ? '#0969da' : '#58a6ff'),
-    gradientEnd: accentColor || (isLight ? '#8250df' : '#bc8cff')
+    bg: isLight ? '#e3e5e3' : '#323437',
+    border: isLight ? '#d4d6d4' : '#2b2d30',
+    title: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
+    icon: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
+    label: isLight ? '#7b8496' : '#646669',
+    value: isLight ? '#323437' : '#d1d0c5',
+    ringBg: isLight ? '#d4d6d4' : '#2b2d30',
+    ringProg: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
+    circleText: isLight ? '#323437' : '#d1d0c5'
   };
 
-  // Rank logic based on Best WPM
-  let rank = 'BEGINNER';
-  let rankColor = '#8b949e';
-  let maxWpm = 60;
+  const clockIcon = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />';
+  const hashIcon = '<path d="M16 4h-2l-1 4H9l1-4H8l-1 4H3v2h3.5l-1.5 6H2v2h3l-1 4h2l1-4h4l-1 4h2l1-4h4v-2h-3.5l1.5-6H19V8h-3l1-4zM12 14H8l1.5-6h4L12 14z" />';
+  const checkIcon = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />';
   
-  if (bestWpm >= 140) { 
-    rank = 'GOD'; 
-    rankColor = '#d29922'; 
-    maxWpm = 200; 
-  } else if (bestWpm >= 100) { 
-    rank = 'PRO'; 
-    rankColor = '#bf3989'; 
-    maxWpm = 150; 
-  } else if (bestWpm >= 60) { 
-    rank = 'INTERMEDIATE'; 
-    rankColor = '#3fb950'; 
-    maxWpm = 100; 
+  // Available stats to select from
+  let activeStats = [
+    { id: 'wpm15', label: '15s WPM:', value: wpm15 || '-', icon: clockIcon },
+    { id: 'wpm30', label: '30s WPM:', value: wpm30 || '-', icon: clockIcon },
+    { id: 'wpm60', label: '60s WPM:', value: wpm60 || '-', icon: clockIcon },
+    { id: 'wpm120', label: '120s WPM:', value: wpm120 || '-', icon: clockIcon },
+    { id: 'rank15', label: '15s Leaderboard:', value: rank15 ? `#${rank15.toLocaleString()}` : 'Unranked', icon: hashIcon },
+    { id: 'rank60', label: '60s Leaderboard:', value: rank60 ? `#${rank60.toLocaleString()}` : 'Unranked', icon: hashIcon },
+    { id: 'tests', label: 'Tests Completed:', value: testsCompleted.toLocaleString(), icon: checkIcon }
+  ];
+
+  // Apply user query parameter filters
+  if (show && show.length > 0) {
+    activeStats = activeStats.filter(s => show.includes(s.id));
+  } else if (hide && hide.length > 0) {
+    activeStats = activeStats.filter(s => !hide.includes(s.id));
+  }
+
+  // Generate SVG list items
+  const statRows = activeStats.map((stat, i) => `
+    <g transform="translate(0, ${i * 26})">
+      <svg x="0" y="0" width="16" height="16" viewBox="0 0 24 24" fill="${colors.icon}">
+        ${stat.icon}
+      </svg>
+      <text x="25" y="12.5" class="stat-label" dominant-baseline="middle">${stat.label}</text>
+      <text x="180" y="12.5" class="stat-value" dominant-baseline="middle">${stat.value}</text>
+    </g>
+  `).join('');
+
+  const cx = 390;
+  const cy = Math.max(70, (activeStats.length * 26) / 2 + 10);
+  const r = 40;
+  const circ = 2 * Math.PI * r;
+  
+  // Calculate World Percentile for top ring (using 60s rank if available)
+  let percentileStr = 'Unranked';
+  let progFill = 0;
+  
+  if (rank60 && rank60Count) {
+    const rawPercentile = (rank60 / rank60Count) * 100;
+    
+    if (rawPercentile < 0.01) percentileStr = '0.01%';
+    else if (rawPercentile < 1) percentileStr = rawPercentile.toFixed(2) + '%';
+    else percentileStr = rawPercentile.toFixed(1) + '%';
+    
+    progFill = Math.max(0, Math.min(1, (100 - rawPercentile) / 100)); // The lower the percentile, the fuller the bar
+  } else {
+    // Fallback if no rank60
+    percentileStr = 'Unranked';
+    progFill = 0;
   }
   
-  const progressPercent = Math.min((bestWpm / maxWpm) * 100, 100);
+  const prog = progFill * circ;
+  const offset = circ - prog;
 
-  // Parse hide options
-  const showUsername = !hide.includes('username');
-  const showWpm = !hide.includes('wpm');
-  const showAcc = !hide.includes('accuracy');
-  const showTests = !hide.includes('tests');
+  // Dynamic height adaptation for card based on row count
+  const totalHeight = Math.max(160, 55 + activeStats.length * 26 + 15);
 
   return `
-    <svg width="450" height="230" viewBox="0 0 450 230" xmlns="http://www.w3.org/2000/svg" role="img">
+    <svg width="495" height="${totalHeight}" viewBox="0 0 495 ${totalHeight}" xmlns="http://www.w3.org/2000/svg" role="img">
       <defs>
         <style>
           .bg { fill: ${colors.bg}; stroke: ${colors.border}; stroke-width: 1px; rx: 10px; }
           .title { fill: ${colors.title}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 18px; }
-          .username { fill: ${colors.username}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 20px; }
-          .stat-label { fill: ${colors.text}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-size: 13px; }
-          .stat-value { fill: ${colors.value}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 16px; }
-          .rank-bg { fill: ${colors.border}; rx: 4px; }
-          .rank-text { fill: ${rankColor}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 12px; }
-          .progress-bg { fill: ${colors.progressBg}; rx: 5px; }
-          .progress-bar { fill: url(#gradient); rx: 5px; }
-          
-          @keyframes glow {
-            0% { filter: drop-shadow(0 0 2px ${colors.gradientStart}80); }
-            50% { filter: drop-shadow(0 0 8px ${colors.gradientStart}80); }
-            100% { filter: drop-shadow(0 0 2px ${colors.gradientStart}80); }
-          }
-          .animated-bar { animation: glow 2s ease-in-out infinite; }
+          .stat-label { fill: ${colors.label}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: 500; font-size: 14px; }
+          .stat-value { fill: ${colors.value}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 14px; }
+          .rank-circle-bg { stroke: ${colors.ringBg}; }
+          .rank-circle { stroke: ${colors.ringProg}; stroke-dasharray: ${circ}; stroke-dashoffset: ${circ}; animation: fillAnimation 1s ease-out forwards; }
+          .circle-title { fill: ${colors.circleText}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 14px; }
+          .circle-subtitle { fill: ${colors.label}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 12px; }
+          @keyframes fillAnimation { to { stroke-dashoffset: ${offset}; } }
         </style>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${colors.gradientStart}" />
-          <stop offset="100%" stop-color="${colors.gradientEnd}" />
-        </linearGradient>
       </defs>
       
-      <rect x="0" y="0" width="450" height="230" class="bg" />
-      <text x="30" y="35" class="title">Monkeytype Stats</text>
+      <rect x="0" y="0" width="495" height="${totalHeight}" class="bg" />
+      <text x="30" y="35" class="title">${username}'s Monkeytype Stats</text>
       
-      ${showUsername ? `
-      <text x="30" y="70" class="username">@${username}</text>
-      <rect x="340" y="52" width="80" height="22" class="rank-bg" />
-      <text x="380" y="67" class="rank-text" text-anchor="middle">${rank}</text>
-      ` : ''}
+      <g transform="translate(30, 55)">
+        ${statRows}
+      </g>
       
-      <!-- Stats Grid -->
-      ${showWpm ? `
-      <text x="30" y="110" class="stat-label">Best WPM</text>
-      <text x="30" y="130" class="stat-value">${bestWpm}</text>
-      
-      <text x="130" y="110" class="stat-label">Avg WPM</text>
-      <text x="130" y="130" class="stat-value">${averageWpm}</text>
-      ` : ''}
-      
-      ${showAcc ? `
-      <text x="230" y="110" class="stat-label">Accuracy</text>
-      <text x="230" y="130" class="stat-value">${accuracy}%</text>
-      ` : ''}
-      
-      ${showTests ? `
-      <text x="330" y="110" class="stat-label">Total Tests</text>
-      <text x="330" y="130" class="stat-value">${testsCompleted}</text>
-      ` : ''}
-      
-      <!-- Progress Bar -->
-      <text x="30" y="170" class="stat-label">WPM Progress to Next Tier (${maxWpm} WPM)</text>
-      <rect x="30" y="180" width="390" height="12" class="progress-bg" />
-      <rect x="30" y="180" width="${3.90 * progressPercent}" height="12" class="progress-bar animated-bar" />
+      <g transform="translate(0, 5)">
+        <circle class="rank-circle-bg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke-width="6" />
+        <circle class="rank-circle" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke-width="6" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})" />
+        <text x="${cx}" y="${cy}" class="circle-title" text-anchor="middle" dominant-baseline="middle">${percentileStr}</text>
+        <text x="${cx}" y="${cy - 14}" class="circle-subtitle" text-anchor="middle" dominant-baseline="middle">Top</text>
+      </g>
     </svg>
   `.trim();
 };
 
 export const generateErrorSvg = (message) => {
   return `
-    <svg width="450" height="120" viewBox="0 0 450 120" xmlns="http://www.w3.org/2000/svg" role="img">
+    <svg width="495" height="120" viewBox="0 0 495 120" xmlns="http://www.w3.org/2000/svg" role="img">
       <defs>
         <style>
           .bg { fill: #0d1117; stroke: #ff7b72; stroke-width: 1px; rx: 10px; }
@@ -117,11 +123,9 @@ export const generateErrorSvg = (message) => {
           .error-text { fill: #ff7b72; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 16px; }
         </style>
       </defs>
-      
-      <rect x="0" y="0" width="450" height="120" class="bg" />
+      <rect x="0" y="0" width="495" height="120" class="bg" />
       <text x="30" y="35" class="title">Monkeytype Stats Error</text>
       <text x="30" y="80" class="error-text">${message}</text>
     </svg>
   `.trim();
 };
-

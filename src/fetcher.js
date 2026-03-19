@@ -8,9 +8,6 @@ export const fetchMonkeytypeStats = async (username) => {
 
   const response = await fetch(url, {
     headers: {
-      // The prompt specified Bearer token, but standard Monkeytype API uses ApeKey
-      // We check if it starts with 'Bearer' to support the prompt directly if desired, 
-      // else fallback to 'ApeKey' for maximum compatibility with real Monkeytype API.
       'Authorization': apiKey.startsWith('Bearer') ? apiKey : `ApeKey ${apiKey}`,
       'Accept': 'application/json'
     }
@@ -26,34 +23,39 @@ export const fetchMonkeytypeStats = async (username) => {
   const result = await response.json();
   const data = result.data;
 
-  // Monkeytype API usually nests personal bests inside "personalBests" object 
-  // and aggregates global typing stats inside "typingStats"
-  let bestWpm = 0;
-  let acc = 0;
+  // Safely extract personal bests
+  const pbTime = data.personalBests?.time || {};
+  const getPb = (mode) => pbTime[mode] && pbTime[mode].length > 0 ? pbTime[mode][0] : null;
   
-  if (data.personalBests && data.personalBests.time) {
-    const timeModes = [15, 30, 60, 120];
-    const bests = timeModes.map(mode => {
-       const pb = data.personalBests.time[mode];
-       return pb && pb.length > 0 ? pb[0].wpm : 0;
-    });
-    bestWpm = Math.max(...bests);
-    
-    // We prioritize grabbing accuracy from the 60s mode, otherwise fallback to 15s
-    const pb60 = data.personalBests.time[60];
-    const pb15 = data.personalBests.time[15];
-    if (pb60 && pb60.length > 0) {
-      acc = pb60[0].acc;
-    } else if (pb15 && pb15.length > 0) {
-      acc = pb15[0].acc;
-    }
-  }
+  const pb15 = getPb(15);
+  const pb30 = getPb(30);
+  const pb60 = getPb(60);
+  const pb120 = getPb(120);
+
+  // Extract all-time leaderboard rankings (stored by language, 'english' is default)
+  const lbsTime = data.allTimeLbs?.time || {};
+  const getRankData = (mode) => {
+    if (lbsTime[mode]?.english?.rank) return lbsTime[mode].english;
+    const langs = Object.keys(lbsTime[mode] || {});
+    return langs.length > 0 ? lbsTime[mode][langs[0]] : null;
+  };
+
+  // Highest achieved WPM out of primary categories for tier ring calculation
+  const bestWpm = Math.max(pb15?.wpm || 0, pb30?.wpm || 0, pb60?.wpm || 0, pb120?.wpm || 0);
+
+  const rank15Data = getRankData(15);
+  const rank60Data = getRankData(60);
 
   return {
     username: data.name || username,
-    bestWpm: Math.round(bestWpm) || 0,
-    averageWpm: Math.round(bestWpm * 0.9) || 0, // Fallback approx if exact average is not heavily exposed without pagination
-    accuracy: Math.round(acc) || 0,
+    bestWpm: Math.round(bestWpm),
+    wpm15: pb15 ? Math.round(pb15.wpm) : 0,
+    wpm30: pb30 ? Math.round(pb30.wpm) : 0,
+    wpm60: pb60 ? Math.round(pb60.wpm) : 0,
+    wpm120: pb120 ? Math.round(pb120.wpm) : 0,
+    rank15: rank15Data?.rank || null,
+    rank60: rank60Data?.rank || null,
+    rank60Count: rank60Data?.count || null,
     testsCompleted: data.typingStats?.completedTests || 0,
   };
 };

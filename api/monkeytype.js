@@ -18,13 +18,15 @@ export default async function handler(req, res) {
   try {
     const stats = await fetchMonkeytypeStats(username);
     
-    // Parse the hidden items conditionally passed in query
+    // Parse the hidden/show items conditionally passed in query
     const hiddenItems = hide ? hide.split(',') : [];
+    const showItems = req.query.show ? req.query.show.split(',') : null;
     
     const svg = generateSvg(stats, {
       theme: theme || 'dark',
       accent: accent, // can be a hex, e.g., 'ff0000'
-      hide: hiddenItems
+      hide: hiddenItems,
+      show: showItems
     });
     
     res.status(200);
