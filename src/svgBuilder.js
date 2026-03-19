@@ -1,5 +1,5 @@
 export const generateSvg = (stats, options) => {
-  const { username, bestWpm, wpm15, wpm30, wpm60, wpm120, rank15, rank60, rank60Count, testsCompleted } = stats;
+  const { username, bestWpm, wpm15, wpm30, wpm60, wpm120, rank15, rank15Count, rank60, rank60Count, testsCompleted } = stats;
   const { theme, accent, hide, show } = options;
 
   const isLight = theme === 'light';
@@ -56,12 +56,20 @@ export const generateSvg = (stats, options) => {
   const r = 40;
   const circ = 2 * Math.PI * r;
   
-  // Calculate World Percentile for top ring (using 60s rank if available)
+  // Calculate World Percentile for top ring (Average of 15s and 60s if available)
   let percentileStr = 'Unranked';
   let progFill = 0;
   
+  let validPercentiles = [];
+  if (rank15 && rank15Count) {
+    validPercentiles.push((rank15 / rank15Count) * 100);
+  }
   if (rank60 && rank60Count) {
-    const rawPercentile = (rank60 / rank60Count) * 100;
+    validPercentiles.push((rank60 / rank60Count) * 100);
+  }
+  
+  if (validPercentiles.length > 0) {
+    const rawPercentile = validPercentiles.reduce((sum, val) => sum + val, 0) / validPercentiles.length;
     
     if (rawPercentile < 0.01) percentileStr = '0.01%';
     else if (rawPercentile < 1) percentileStr = rawPercentile.toFixed(2) + '%';
@@ -69,7 +77,7 @@ export const generateSvg = (stats, options) => {
     
     progFill = Math.max(0, Math.min(1, (100 - rawPercentile) / 100)); // The lower the percentile, the fuller the bar
   } else {
-    // Fallback if no rank60
+    // Fallback if no rank data is available
     percentileStr = 'Unranked';
     progFill = 0;
   }

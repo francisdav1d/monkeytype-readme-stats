@@ -54,6 +54,7 @@ export const fetchMonkeytypeStats = async (username) => {
     wpm60: pb60 ? Math.round(pb60.wpm) : 0,
     wpm120: pb120 ? Math.round(pb120.wpm) : 0,
     rank15: rank15Data?.rank || null,
+    rank15Count: rank15Data?.count || null,
     rank60: rank60Data?.rank || null,
     rank60Count: rank60Data?.count || null,
     testsCompleted: data.typingStats?.completedTests || 0,
