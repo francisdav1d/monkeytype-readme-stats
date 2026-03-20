@@ -1,22 +1,24 @@
 export const generateSvg = (stats, options) => {
   const { username, bestWpm, wpm15, wpm30, wpm60, wpm120, rank15, rank15Count, rank60, rank60Count, testsCompleted } = stats;
-  const { theme, accent, hide, show } = options;
+  const { theme, accent, hide, show, font, bg_color, title_color, text_color, icon_color, ring_color } = options;
 
   const isLight = theme === 'light';
   const customAccent = accent ? `#${accent}` : null;
   
   // Authentic Monkeytype Theme Colors (Serika Dark / Light)
   const colors = {
-    bg: isLight ? '#e3e5e3' : '#323437',
+    bg: bg_color ? `#${bg_color}` : (isLight ? '#e3e5e3' : '#323437'),
     border: isLight ? '#d4d6d4' : '#2b2d30',
-    title: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
-    icon: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
+    title: title_color ? `#${title_color}` : (customAccent || (isLight ? '#5e6a86' : '#e2b714')),
+    icon: icon_color ? `#${icon_color}` : (customAccent || (isLight ? '#5e6a86' : '#e2b714')),
     label: isLight ? '#7b8496' : '#646669',
-    value: isLight ? '#323437' : '#d1d0c5',
+    value: text_color ? `#${text_color}` : (isLight ? '#323437' : '#d1d0c5'),
     ringBg: isLight ? '#d4d6d4' : '#2b2d30',
-    ringProg: customAccent || (isLight ? '#5e6a86' : '#e2b714'),
-    circleText: isLight ? '#323437' : '#d1d0c5'
+    ringProg: ring_color ? `#${ring_color}` : (customAccent || (isLight ? '#5e6a86' : '#e2b714')),
+    circleText: text_color ? `#${text_color}` : (isLight ? '#323437' : '#d1d0c5')
   };
+
+  const fontFamily = font ? `"${font}", 'Segoe UI', Ubuntu, sans-serif` : "'Segoe UI', Ubuntu, sans-serif";
 
   const clockIcon = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />';
   const hashIcon = '<path d="M16 4h-2l-1 4H9l1-4H8l-1 4H3v2h3.5l-1.5 6H2v2h3l-1 4h2l1-4h4l-1 4h2l1-4h4v-2h-3.5l1.5-6H19V8h-3l1-4zM12 14H8l1.5-6h4L12 14z" />';
@@ -93,13 +95,13 @@ export const generateSvg = (stats, options) => {
       <defs>
         <style>
           .bg { fill: ${colors.bg}; stroke: ${colors.border}; stroke-width: 1px; rx: 10px; }
-          .title { fill: ${colors.title}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 18px; }
-          .stat-label { fill: ${colors.label}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: 500; font-size: 14px; }
-          .stat-value { fill: ${colors.value}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 14px; }
+          .title { fill: ${colors.title}; font-family: ${fontFamily}; font-weight: bold; font-size: 18px; }
+          .stat-label { fill: ${colors.label}; font-family: ${fontFamily}; font-weight: 500; font-size: 14px; }
+          .stat-value { fill: ${colors.value}; font-family: ${fontFamily}; font-weight: bold; font-size: 14px; }
           .rank-circle-bg { stroke: ${colors.ringBg}; }
           .rank-circle { stroke: ${colors.ringProg}; stroke-dasharray: ${circ}; stroke-dashoffset: ${circ}; animation: fillAnimation 1s ease-out forwards; }
-          .circle-title { fill: ${colors.circleText}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 14px; }
-          .circle-subtitle { fill: ${colors.label}; font-family: 'Segoe UI', Ubuntu, sans-serif; font-weight: bold; font-size: 12px; }
+          .circle-title { fill: ${colors.circleText}; font-family: ${fontFamily}; font-weight: bold; font-size: 14px; }
+          .circle-subtitle { fill: ${colors.label}; font-family: ${fontFamily}; font-weight: bold; font-size: 12px; }
           @keyframes fillAnimation { to { stroke-dashoffset: ${offset}; } }
         </style>
       </defs>

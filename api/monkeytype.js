@@ -2,7 +2,7 @@ import { fetchMonkeytypeStats } from '../src/fetcher.js';
 import { generateSvg, generateErrorSvg } from '../src/svgBuilder.js';
 
 export default async function handler(req, res) {
-  const { username, theme, accent, hide } = req.query;
+  const { username, theme, accent, hide, show, font, bg_color, title_color, text_color, icon_color, ring_color } = req.query;
 
   // Set the correct Content-Type to return an SVG image
   res.setHeader('Content-Type', 'image/svg+xml');
@@ -24,7 +24,13 @@ export default async function handler(req, res) {
     
     const svg = generateSvg(stats, {
       theme: theme || 'dark',
-      accent: accent, // can be a hex, e.g., 'ff0000'
+      accent: accent,
+      font: font,
+      bg_color: bg_color,
+      title_color: title_color,
+      text_color: text_color,
+      icon_color: icon_color,
+      ring_color: ring_color,
       hide: hiddenItems,
       show: showItems
     });

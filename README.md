@@ -42,14 +42,21 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 
 ### Themes and Colors
 
-You can easily change the aesthetic!
-
 **Light Theme:**
 ```md
 ![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=light)
 ```
 
-**Custom Accent Color (use hex codes without the #):**
+**Advanced Customization:**
+You can build your own theme entirely from scratch using hex codes (without the `#`) and your own web-safe fonts:
+- `bg_color` (background color)
+- `title_color` (title and default accent color)
+- `text_color` (labels and numbers color)
+- `icon_color` (svg icons color)
+- `ring_color` (percentile slider color)
+- `font` (e.g. `Inter`, `Roboto`, `monospace`, etc.)
+
+**Example (A highly custom card):**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=dark&accent=3fb950)
+![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&bg_color=000000&title_color=ff0000&text_color=ffffff&font=monospace)
 ```
