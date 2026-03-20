@@ -4,10 +4,10 @@ Show off your live typing speed right on your GitHub profile perfectly. It updat
 
 ## How to use it
 
-To get your own, just paste this single line of code into your GitHub Profile `README.md`:
+To get your own, just paste this code into your GitHub Profile `README.md` (this also makes the card clickable, leading straight back here!):
 
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=YOUR_MONKEYTYPE_NAME&theme=dark)
+[![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=YOUR_MONKEYTYPE_NAME&theme=dark)](https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 *(Just replace `YOUR_MONKEYTYPE_NAME` with your actual username)*
 
