@@ -2,6 +2,10 @@
 
 Show off your live typing speed right on your GitHub profile perfectly. It updates instantly every time someone looks at your profile!
 
+
+<img width="488" height="171" alt="image" src="https://github.com/user-attachments/assets/9cb762ff-85ee-4569-a6d5-b0c4b0d42ba6" />
+
+
 ## How to use it
 
 To get your own, just paste this code into your GitHub Profile `README.md` (this also makes the card clickable, leading straight back here!):
@@ -19,12 +23,12 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 
 **Show ONLY specific stats you want people to see (like just 15s WPM and your Rank):**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&show=wpm15,rank15)
+![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&show=wpm15,rank15)(https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Hide specific things you don't like:**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&hide=tests,wpm30)
+![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&hide=tests,wpm30)(https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Here are all the stat tags you can use:**
@@ -44,7 +48,7 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 
 **Light Theme:**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=light)
+![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=light)(https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Advanced Customization:**
@@ -58,5 +62,5 @@ You can build your own theme entirely from scratch using hex codes (without the 
 
 **Example (A highly custom card):**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&bg_color=000000&title_color=ff0000&text_color=ffffff&font=monospace)
+![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&bg_color=000000&title_color=ff0000&text_color=ffffff&font=monospace)(https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
