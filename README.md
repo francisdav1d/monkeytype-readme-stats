@@ -23,12 +23,12 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 
 **Show ONLY specific stats you want people to see (like just 15s WPM and your Rank):**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&show=wpm15,rank15)(https://github.com/francisdav1d/monkeytype-readme-stats)
+[![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&show=wpm15,rank15)](https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Hide specific things you don't like:**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&hide=tests,wpm30)(https://github.com/francisdav1d/monkeytype-readme-stats)
+[![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&hide=tests,wpm30)](https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Here are all the stat tags you can use:**
@@ -48,7 +48,7 @@ You can fully customize exactly what shows up on your card by adding `&show=` or
 
 **Light Theme:**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=light)(https://github.com/francisdav1d/monkeytype-readme-stats)
+[![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&theme=light)](https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
 
 **Advanced Customization:**
@@ -62,5 +62,5 @@ You can build your own theme entirely from scratch using hex codes (without the 
 
 **Example (A highly custom card):**
 ```md
-![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&bg_color=000000&title_color=ff0000&text_color=ffffff&font=monospace)(https://github.com/francisdav1d/monkeytype-readme-stats)
+[![Monkeytype Stats](https://monkeytype-readme-stats.vercel.app/api/monkeytype?username=myname&bg_color=000000&title_color=ff0000&text_color=ffffff&font=monospace)](https://github.com/francisdav1d/monkeytype-readme-stats)
 ```
